@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,12 +7,29 @@ namespace TicTacToe
 {
     public partial class PVC : Window
     {
-        private string currentPlayer = "X";
+        private string currentPlayer = "X"; // Player is always "X", CPU is "O"
         private bool gameActive = true;
 
         public PVC()
         {
             InitializeComponent();
+            StartNewGame();
+        }
+
+        private void StartNewGame()
+        {
+            foreach (Button button in GetAllButtons())
+            {
+                button.Content = null;
+            }
+
+            gameActive = true;
+            currentPlayer = "X";
+        }
+
+        private Button[] GetAllButtons()
+        {
+            return new Button[] { Button0, Button1, Button2, Button3, Button4, Button5, Button6, Button7, Button8 };
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -27,7 +45,7 @@ namespace TicTacToe
 
                 if (CheckWinner())
                 {
-                    MessageBox.Show(currentPlayer + " wins!", "Game Over", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"{currentPlayer} wins!", "Game Over", MessageBoxButton.OK, MessageBoxImage.Information);
                     gameActive = false;
                 }
                 else if (IsBoardFull())
@@ -37,60 +55,57 @@ namespace TicTacToe
                 }
                 else
                 {
-                    if (currentPlayer == "X")
-                    {
-                        currentPlayer = "O";
-                    }
-                    else
-                    {
-                        currentPlayer = "X";
-                    }
-
+                    SwitchTurn();
                 }
             }
         }
 
-
-        private void ResetBoard()
-        {
-            // Loop through all buttons to clear the content (assumes buttons named Button0, Button1, ..., Button8)
-            Button0.Content = null;
-            Button1.Content = null;
-            Button2.Content = null;
-            Button3.Content = null;
-            Button4.Content = null;
-            Button5.Content = null;
-            Button6.Content = null;
-            Button7.Content = null;
-            Button8.Content = null;
-
-            // Optionally, reset other variables like gameActive if needed
-        }
-
-        //private void SetFirstPlayer()
-        //{
-        //    Random random = new Random();
-        //    currentPlayer = random.Next(2) == 0 ? "X" : "O"; // Randomly select "X" or "O"
-        //}
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Button button in new Button[] { Button0, Button1, Button2, Button3, Button4, Button5, Button6, Button7, Button8 })
+            StartNewGame();
+        }
+
+        private void SwitchTurn()
+        {
+            if (currentPlayer == "X")
             {
-                button.Content = null;
+                currentPlayer = "O"; // CPU's turn
+                CpuMove();
             }
+            else
+            {
+                currentPlayer = "X"; // Player's turn
+            }
+        }
 
-            currentPlayer = "X";
-            gameActive = true;
-            ResetBoard();
+        private void CpuMove()
+        {
+            if (!gameActive)
+                return;
 
-            // Set who starts first
-            //SetFirstPlayer();
+            Random random = new Random();
+            Button[] emptyButtons = GetAllButtons().Where(b => string.IsNullOrEmpty(b.Content?.ToString())).ToArray();
 
-            // Enable the game to start
-            gameActive = true;
+            if (emptyButtons.Length > 0)
+            {
+                Button randomButton = emptyButtons[random.Next(emptyButtons.Length)];
+                randomButton.Content = "O";
 
-            // Optionally, show a message who starts first
-            MessageBox.Show(currentPlayer + " will start the game!", "Game Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (CheckWinner())
+                {
+                    MessageBox.Show("CPU (O) wins!", "Game Over", MessageBoxButton.OK, MessageBoxImage.Information);
+                    gameActive = false;
+                }
+                else if (IsBoardFull())
+                {
+                    MessageBox.Show("It's a draw!", "Game Over", MessageBoxButton.OK, MessageBoxImage.Information);
+                    gameActive = false;
+                }
+                else
+                {
+                    currentPlayer = "X"; // Return turn to the player
+                }
+            }
         }
 
         private bool CheckWinner()
@@ -120,12 +135,7 @@ namespace TicTacToe
 
         private bool IsBoardFull()
         {
-            foreach (Button button in new Button[] { Button0, Button1, Button2, Button3, Button4, Button5, Button6, Button7, Button8 })
-            {
-                if (string.IsNullOrEmpty(button.Content?.ToString()))
-                    return false;
-            }
-            return true;
+            return GetAllButtons().All(b => !string.IsNullOrEmpty(b.Content?.ToString()));
         }
     }
 }
