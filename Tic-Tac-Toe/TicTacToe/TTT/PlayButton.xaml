@@ -1,0 +1,85 @@
+﻿<Window x:Class="TTT.PlayButton"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TTT"
+        mc:Ignorable="d"
+        WindowState="Maximized"
+        Title="Tic Tac Toe" WindowStartupLocation="CenterScreen"
+        Height="450" Width="450" Background="#FFBBE8FF">
+    <!-- Lighter pastel blue background -->
+
+    <Window.Resources>
+        <!-- Retro Button Style -->
+        <Style x:Key="SplashButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontFamily" Value="Courier New"/>
+            <Setter Property="Background" Value="#FF4F88A3"/>
+            <!-- Soft teal for button background -->
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF1F2A44"/>
+            <!-- Retro border color -->
+            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="Height" Value="70"/>
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF0066CC"/>
+                    <!-- Brighter hover effect -->
+                    <Setter Property="Foreground" Value="#FF1F2A44"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#FF0066CC"/>
+                    <Setter Property="Foreground" Value="#FFE4B3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <!-- Light Blue and Pink Gradient Background -->
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#B3D9FF" Offset="0"/>
+                <!-- Light pastel blue -->
+                <GradientStop Color="#66B3FF" Offset="0.5"/>
+                <!-- Soft medium blue -->
+                <GradientStop Color="#4F88A3" Offset="1"/>
+                <!-- Deeper teal blue -->
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock FontSize="45" FontWeight="Bold" 
+               FontFamily="Courier New" HorizontalAlignment="Center" 
+               VerticalAlignment="Center" Margin="2">
+                <TextBlock.Foreground>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FF4F88A3" Offset="0"/>
+                        <GradientStop Color="#FF1F2A44" Offset="1"/>
+                    </LinearGradientBrush>
+                </TextBlock.Foreground>
+        TIC-TAC-TOE
+            </TextBlock>
+        </StackPanel>
+
+
+
+        <!-- PVP Button and PVC Button -->
+        <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Content="Player Vs Player" Style="{StaticResource SplashButtonStyle}" Click="PVP_Click"/>
+            <Button Content="Player Vs CPU" Style="{StaticResource SplashButtonStyle}" Click="PVC_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
